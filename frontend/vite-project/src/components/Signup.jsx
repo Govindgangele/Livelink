@@ -1,0 +1,111 @@
+import React from 'react'
+import { useForm } from "react-hook-form";
+import axios from 'axios';
+import { useAuth } from '../context/Authprovider';
+import { Link, useNavigate } from 'react-router-dom';
+function Signup() {
+    const navigate = useNavigate(); 
+    const[auth,setauth]=useAuth();
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors } } = useForm();
+    const password = watch("password", "")
+    const confirmpassword = watch("confirmpassword", "")
+    const validatepasswordmatch = (value) => {
+        return value === password || "password and confirmpassword do not match";
+    }
+    const onSubmit = async (data) => {
+        const chatuser = {
+            fullname: data.Username,
+            email: data.Email,
+            password: data.password,
+            confirmpassword: data.confirmpassword
+        };
+
+
+        await axios.post("/api/user/signup", chatuser)
+            .then((response) => {
+                console.log(response.data);
+                if (response.data) {
+                    alert("Signup successful");
+                }
+                localStorage.setItem("chatAPP", JSON.stringify(response.data));
+                setauth(response.data);
+                
+            })
+            .catch((error) => {
+                if (error.response) {
+                    alert("Error :" + error.response.data.error)
+                }
+            });
+    };
+
+    return (
+        <>
+            <div className='flex w-screen h-screen items-center justify-center'>
+
+                <form onSubmit={handleSubmit(onSubmit)} className='flex-wrap flex-col border-1 px-6 py-4 rounded-4xl border-amber-50 justify-center items-center align-middle'>
+                    <div className='flex justify-center '>
+                        <div className='w-fit'>
+                            <h1><span>SIGN</span><span className='text-green-500'>UP</span></h1>
+
+                        </div>
+                    </div>
+                    <div className='flex-wrap justify-center py-1'>
+                        <label className="input validator  ">
+                            <svg className="h-[1em]  opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></g></svg>
+                            <input type="input" placeholder="Username" pattern="[A-Za-z][A-Za-z0-9\-]*" minLength="3" maxLength="30" title="Only letters, numbers or dash"
+                                {...register("Username", { required: true })} />
+
+
+                        </label>
+                        {errors.Username && (<span>This field is required</span>)}
+                    </div>
+                    <div className='flex-col justify-center py-1'>
+                        <label className="input validator ">
+                            <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></g></svg>
+                            <input type="email" placeholder="Email"  {...register("Email", { required: true })} />
+                        </label>
+                        {errors.Email && (<span>This field is required</span>)}
+                        <div className="validator-hint hidden">Enter valid email address</div>
+                    </div>
+                    <div className='flex-col justify-center py-1'>
+                        <label className="input validator">
+                            <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></g></svg>
+                            <input type="password" placeholder="Password" minLength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+                                {...register("password", { required: true })} />
+
+                        </label>
+                        {errors.password && (<span>This field is required</span>)}
+
+                    </div>
+                    <div className=' flex-col justify-center py-1'>
+                        <label className="input validator">
+                            <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></g></svg>
+                            <input type="password" placeholder="confirmpassword" {...register("confirmpassword", { required: true, validate: validatepasswordmatch })} minLength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
+                        </label>
+                        <div>
+
+                        {errors.confirmpassword && (<span className='text-red-600'>{errors.confirmpassword.message}</span>)}
+                        </div>
+
+                    </div>
+                    <div className='flex-col justify-center'>
+                        <p className='flex justify-center py-2'>
+                            Have a account? <Link to={'/login'} className='text-green-500 pl-6'>Login</Link>
+                        </p>
+                        <div className='flex justify-center'>
+
+                            <input type="submit" value="signup" className='text-center p-2 rounded-3xl' />
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </>
+    )
+}
+
+export default Signup
