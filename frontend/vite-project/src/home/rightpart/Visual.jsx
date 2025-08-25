@@ -8,7 +8,19 @@ function Visual({message}) {
     let chatname = itsme ? "chat-start" : "chat-end";
     chatname=itsme1? "chat-end":"chat-start";
     const chatcolor = itsme ? "bg-blue-400" : "bg-yellow-400";
+    const date = new Date(message.createdAt);
 
+const formattedDate = date.toLocaleDateString('en-GB', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric'
+}); // Output: "28 Jun 2025"
+
+const formattedTime = date.toLocaleTimeString('en-US', {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: true
+});
     
     return (
         <div>
@@ -16,8 +28,8 @@ function Visual({message}) {
 
                 <div className={`chat ${chatname}`} >
                     <div className="chat-header">
-                        Govind
-                        <time className="text-xs opacity-50">2 hours ago</time>
+                        
+                        <time className="text-xs opacity-50">{`${formattedDate}, ${formattedTime}`}</time>
                     </div>
                     <div className={`chat-bubble ${chatcolor}`}>{message.message}</div>
                     <div className="chat-footer opacity-50">Seen</div>

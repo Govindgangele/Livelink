@@ -12,7 +12,7 @@ function Getalluser() {
         try {
             const token=Cookies.get("jwt");
             const response=await axios.get("/api/user/alluser",{
-                credentials:"include",
+                
                 headers:{
                     Authorization:`Bearer ${token}`,
                 },

@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaUserSecret } from 'react-icons/fa'
 import Chatuser from './Chatuser'
-import Middle from './middle'
+import Middle from './Middle'
 import Bottom from './Bottom'
 function Right() {
   return (
