@@ -32,8 +32,14 @@ export const login = async (req, res) => {
 
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
-       
+        const user = await User.findOne({ email }).select('+password');
+        console.log(User.password);
+       console.log("User:", user);
+console.log("Entered password:", password);
+console.log("Stored hash:", user?.password);
+if (!user?.password) {
+  return res.status(400).json({ error: "Password not found in user document" });
+}
         if (!user ) {
             return res.status(400).json({ error: "invalid credentials" });
         }
@@ -60,6 +66,7 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
     try {
         res.clearCookie("jwt");
+
         res.status(200).json({ message: "user logged out successfully" });
     } catch (error) {
         console.log(error);

@@ -1,7 +1,8 @@
-
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/messages.model.js";
 import Secureroute from "../middleware/Secureroute.js";
+import { getreceiverid ,io} from "../SocketIO/socket.js";
+
 export const sendmessage=async(req,res)=>{
  try {
     const {message}=req.body;
@@ -27,8 +28,18 @@ export const sendmessage=async(req,res)=>{
     }
     
     await Promise.all([conversation.save(),newMessage.save()]);
+    const receiversocketid=getreceiverid(receiverId);
+   if (receiversocketid) {
+  io.to(receiversocketid).emit("newmessage", newMessage);
+}
+const senderSocketId = getreceiverid(senderId.toString());
+if (senderSocketId) {
+  io.to(senderSocketId).emit("newmessage", newMessage);
+}
+
+
     res.status(201).json({
-        message:"message sent successfully",
+        message:"message send successfully",
         newMessage,
     })
  } catch (error) {

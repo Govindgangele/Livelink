@@ -5,8 +5,8 @@ import cors from "cors"
 import userroute from "./routes/routes.model.js"
 import cookieParser from "cookie-parser";
 import messageroute from "./routes/messageroute.js"
+import { app, server } from "./SocketIO/socket.js";
 dotenv.config();
-const app = express()
 const PORT=process.env.PORT;
 const MONGODB_URL=process.env.MONGODB_URL;
 app.use(express.json());
@@ -21,6 +21,6 @@ try {
 app.use("/api/user",userroute);
 app.use("/api/message",messageroute);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`)
 })

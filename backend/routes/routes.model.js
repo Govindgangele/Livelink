@@ -1,6 +1,5 @@
 import {alluser, login, logout, signup} from "../controller/user.controller.js";
 import express from "express"
-import { Router } from "express";
 import Secureroute from "../middleware/Secureroute.js";
 const router =express.Router();
 router.post("/signup",signup);

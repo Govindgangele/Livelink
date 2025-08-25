@@ -21,7 +21,8 @@ const Secureroute=async(req,res,next)=>{
     req.user=user;
     next();
    } catch (error) {
-    console.log("error in securerout"+error);
-   } 
+  console.log("error in Secureroute:", error);
+  return res.status(401).json({ error: "Unauthorized access" });
+} 
 }
 export default Secureroute;
